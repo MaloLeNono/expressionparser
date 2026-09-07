@@ -3,6 +3,6 @@ project(expressionparser)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(expressionparser main.cpp
-        parser.h
-        parser.cpp)
+add_executable(expressionparser src/main.cpp
+        src/parser.h
+        src/parser.cpp)
