@@ -2,6 +2,7 @@
 #include <charconv>
 #include <cmath>
 #include <iostream>
+#include <optional>
 #include <unordered_map>
 #include <vector>
 
