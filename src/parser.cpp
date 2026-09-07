@@ -1,4 +1,4 @@
-﻿#include "../parser.h"
+﻿#include "parser.h"
 #include <charconv>
 #include <cmath>
 #include <iostream>
