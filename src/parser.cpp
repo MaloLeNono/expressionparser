@@ -1,9 +1,10 @@
 ﻿#include "parser.h"
+
+#include <array>
 #include <charconv>
 #include <cmath>
 #include <iostream>
 #include <optional>
-#include <unordered_map>
 #include <vector>
 
 enum class TokenType {
@@ -23,7 +24,7 @@ struct Token {
     std::optional<double> value{};
 };
 
-std::vector<Token> tokenize(const std::string& expression) {
+std::vector<Token> tokenize(const std::string_view expression) {
     std::vector<Token> tokens{};
 
     size_t i{};
@@ -87,13 +88,6 @@ std::vector<Token> tokenize(const std::string& expression) {
 std::vector<Token> shuntingYard(const std::vector<Token>& tokens) {
     std::vector<Token> outputQueue{};
     std::vector<Token> operatorStack;
-    std::unordered_map<TokenType, int> precedenceMap;
-    precedenceMap[TokenType::UnaryMinus] = 5;
-    precedenceMap[TokenType::Cheveron] = 4;
-    precedenceMap[TokenType::Star] = 3;
-    precedenceMap[TokenType::Slash] = 3;
-    precedenceMap[TokenType::Plus] = 2;
-    precedenceMap[TokenType::Minus] = 2;
 
     for (Token token : tokens) {
         if (token.tokenType == TokenType::Number)
@@ -112,12 +106,14 @@ std::vector<Token> shuntingYard(const std::vector<Token>& tokens) {
             operatorStack.pop_back();
         }
         else {
+            constexpr std::array precedence{0, 2, 2, 3, 3, 4, 5};
             const bool isRightAssociative{token.tokenType == TokenType::UnaryMinus || token.tokenType == TokenType::Cheveron};
+            const int tokenTypeInt{static_cast<int>(token.tokenType)};
 
             while (!operatorStack.empty() &&
                    operatorStack.back().tokenType != TokenType::LeftParen &&
-                   (precedenceMap[operatorStack.back().tokenType] > precedenceMap[token.tokenType] ||
-                   (precedenceMap[operatorStack.back().tokenType] == precedenceMap[token.tokenType] && !isRightAssociative))) {
+                   (precedence[static_cast<int>(operatorStack.back().tokenType)] > precedence[tokenTypeInt] ||
+                   (precedence[static_cast<int>(operatorStack.back().tokenType)] == precedence[tokenTypeInt] && !isRightAssociative))) {
                 outputQueue.push_back(operatorStack.back());
                 operatorStack.pop_back();
             }
@@ -186,7 +182,7 @@ double parseTokens(const std::vector<Token>& tokens) {
     return stack[0].value.value();
 }
 
-double parseExpression(const std::string &expression) {
+double parseExpression(const std::string_view expression) {
     const std::vector tokens{tokenize(expression)};
     return parseTokens(tokens);
 }
