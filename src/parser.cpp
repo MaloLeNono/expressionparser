@@ -5,6 +5,23 @@
 #include <unordered_map>
 #include <vector>
 
+enum class TokenType {
+    Number,
+    Plus,
+    Minus,
+    UnaryMinus,
+    Star,
+    Slash,
+    Cheveron,
+    LeftParen,
+    RightParen
+};
+
+struct Token {
+    TokenType tokenType{};
+    std::optional<double> value{};
+};
+
 std::vector<Token> tokenize(const std::string& expression) {
     std::vector<Token> tokens{};
 
